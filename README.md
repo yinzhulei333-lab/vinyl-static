@@ -11,6 +11,12 @@ An interactive audiovisual instrument built for Assignment 3. A vinyl record sit
 - **What happens:** the record spins faster, rainbow-of-cool-colour sand bursts out of the grooves, ripple rings expand, and a procedural rock band (distorted guitar, bass, drums, pad, arpeggio, lead) starts playing — the mix gets denser and brighter the louder you are.
 - **The core rule:** interaction *is* the sound. Stop moving and the music fades out within ~0.3 s, the sand decays 3.4× faster, the record coasts to a stop. The piece is silent and still without a person.
 
+## Screenshot
+
+![VINYL STATIC in action](screenshot.png)
+
+*Mid-interaction: spectrum ring, rim light and sand bursting from the grooves.*
+
 ## How to interact
 
 | Input | Effect |
