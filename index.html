@@ -69,6 +69,58 @@
   @keyframes pulse { 50% { box-shadow: 0 0 24px rgba(120,140,255,.4); } }
   .curtain.hide { opacity: 0; pointer-events: none; }
 
+  /* ---- onboarding: "connect your senses" ---- */
+  .onboard {
+    position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(.96);
+    z-index: 7; width: min(430px, 88vw);
+    background: rgba(8, 10, 24, .94);
+    border: 1px solid rgba(150, 175, 255, .32);
+    border-radius: 14px;
+    padding: 26px 24px 20px;
+    text-align: center;
+    box-shadow: 0 24px 80px rgba(70, 100, 255, .18), 0 0 0 1px rgba(255,255,255,.02) inset;
+    opacity: 0; pointer-events: none;
+    transition: opacity .45s, transform .45s;
+    backdrop-filter: blur(10px);
+  }
+  .onboard.show { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+  .onboard h3 {
+    font-size: 13px; letter-spacing: .28em; text-indent: .28em;
+    color: #cfe0ff; font-weight: normal; margin-bottom: 8px;
+  }
+  .onboard .sub {
+    font-size: 12.5px; line-height: 1.9; color: #8b93b8; margin-bottom: 18px;
+  }
+  .onboard .opts { display: flex; flex-direction: column; gap: 10px; }
+  .onboard .opt {
+    display: flex; align-items: center; gap: 12px; text-align: left;
+    background: rgba(140, 165, 255, .07);
+    border: 1px solid rgba(150, 175, 255, .3);
+    color: #dfe6ff; border-radius: 10px;
+    padding: 13px 16px; font-size: 13.5px;
+    cursor: pointer; transition: all .2s;
+    font-family: inherit;
+  }
+  .onboard .opt:hover { background: rgba(140, 165, 255, .16); border-color: #9fb4ff; }
+  .onboard .opt .ic { font-size: 20px; }
+  .onboard .opt .tx strong { display: block; font-size: 13px; letter-spacing: .04em; }
+  .onboard .opt .tx span { color: #8b93b8; font-size: 11.5px; }
+  .onboard .skip {
+    margin-top: 16px; background: none; border: none; color: #6f7ba4;
+    font-size: 11.5px; letter-spacing: .1em; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px;
+    font-family: inherit;
+  }
+  .onboard .skip:hover { color: #a9b8dd; }
+
+  .controls button.pulse {
+    animation: pulseBtn 1.8s ease-in-out infinite;
+  }
+  @keyframes pulseBtn {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(140, 165, 255, 0); border-color: rgba(150, 175, 255, .24); }
+    50% { box-shadow: 0 0 16px 2px rgba(120, 145, 255, .45); border-color: #9fb4ff; color: #eef2ff; }
+  }
+
   .toast {
     position: fixed; top: 66px; left: 50%; transform: translateX(-50%) translateY(-8px);
     background: rgba(10,12,28,.95); border: 1px solid rgba(150,175,255,.28);
@@ -111,6 +163,26 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div class="onboard" id="onboard">
+  <h3>CONNECT YOUR SENSES</h3>
+  <div class="sub">
+    Right now the record only answers your mouse.<br>
+    Give it ears and eyes and it will answer <em>you</em>.
+  </div>
+  <div class="opts">
+    <button class="opt" id="obMic">
+      <span class="ic">🎙</span>
+      <span class="tx"><strong>Enable voice</strong><span>shout, sing — the record spins and blooms</span></span>
+    </button>
+    <button class="opt" id="obCam">
+      <span class="ic">📷</span>
+      <span class="tx"><strong>Enable camera</strong><span>wave your hands — motion becomes colour</span></span>
+    </button>
+  </div>
+  <button class="skip" id="obSkip">continue with mouse only</button>
+</div>
+
 <video id="video" playsinline muted style="display:none"></video>
 
 <script>
@@ -675,9 +747,13 @@
 
   micBtn.addEventListener("click", async e => {
     e.stopPropagation();
-    if (micOn) { stopMic(); return; }
+    if (micOn) { stopMic(); } else { await enableMic(); }
+  });
+
+  async function enableMic() {
+    if (micOn) return true;
     if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
-      toast("Voice needs https or localhost — open the published link instead"); return;
+      toast("Voice needs https or localhost — open the published link instead"); return false;
     }
     initAudio();
     try {
@@ -691,25 +767,34 @@
       freqData = new Uint8Array(analyser.frequencyBinCount);
       micOn = true;
       micBtn.classList.add("on"); micBtn.textContent = "🎙 voice on";
+      micBtn.classList.remove("pulse");
       updateStatus(); toast("Voice live — shout and watch the record answer");
+      checkOnboarding();
+      return true;
     } catch (err) {
       toast(err.name === "NotAllowedError"
         ? "Mic permission denied — use your mouse or the camera instead"
         : "No microphone found — mouse and camera still work");
+      return false;
     }
-  });
+  }
   function stopMic() {
     if (micStream) micStream.getTracks().forEach(t => t.stop());
     micStream = null; analyser = null; micOn = false;
     micBtn.classList.remove("on"); micBtn.textContent = "🎙 voice";
+    micBtn.classList.add("pulse");
     updateStatus();
   }
 
   camBtn.addEventListener("click", async e => {
     e.stopPropagation();
-    if (camOn) { stopCam(); return; }
+    if (camOn) { stopCam(); } else { await enableCam(); }
+  });
+
+  async function enableCam() {
+    if (camOn) return true;
     if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
-      toast("Camera needs https or localhost — open the published link instead"); return;
+      toast("Camera needs https or localhost — open the published link instead"); return false;
     }
     initAudio();
     try {
@@ -722,17 +807,22 @@
       prevFrame = null;
       camOn = true;
       camBtn.classList.add("on"); camBtn.textContent = "📷 camera on";
+      camBtn.classList.remove("pulse");
       updateStatus(); toast("Camera live — wave your hands in front of it");
+      checkOnboarding();
+      return true;
     } catch (err) {
       toast(err.name === "NotAllowedError"
         ? "Camera permission denied — voice and mouse still work"
         : "No camera found — voice and mouse still work");
+      return false;
     }
-  });
+  }
   function stopCam() {
     if (camStream) camStream.getTracks().forEach(t => t.stop());
     camStream = null; camOn = false; prevFrame = null;
     camBtn.classList.remove("on"); camBtn.textContent = "📷 camera";
+    camBtn.classList.add("pulse");
     updateStatus();
   }
 
@@ -1090,7 +1180,7 @@
     if (camOn && micOn) statusEl.textContent = "voice + camera live · shout or wave";
     else if (micOn) statusEl.textContent = "voice live · shout to spin the record";
     else if (camOn) statusEl.textContent = "camera live · wave your hands";
-    else statusEl.textContent = "move your mouse to play · click for a burst";
+    else statusEl.textContent = "mouse only · tap 🎙 or 📷 above to let it hear and see you";
   }
 
   /* ---------- boot ---------- */
@@ -1099,9 +1189,51 @@
     initAudio();
     if (audioCtx.state === "suspended") audioCtx.resume();
     curtain.classList.add("hide");
-    toast("Shout, wave, or move — and everything stops when you do");
     setTimeout(() => burst(0.9), 240);
+    // onboarding: make the sensors discoverable (added after a user trial where
+    // the visitor never realised voice/camera had to be enabled manually)
+    setTimeout(openOnboarding, 700);
   });
+
+  /* ---------- onboarding card ---------- */
+  const onboard = document.getElementById("onboard");
+  const obMic = document.getElementById("obMic");
+  const obCam = document.getElementById("obCam");
+  const obSkip = document.getElementById("obSkip");
+  let onboardDone = false;
+
+  function openOnboarding() {
+    if (onboardDone || (micOn && camOn)) return;
+    onboard.classList.add("show");
+    if (!micOn) micBtn.classList.add("pulse");
+    if (!camOn) camBtn.classList.add("pulse");
+  }
+  function closeOnboarding() {
+    onboard.classList.remove("show");
+    onboardDone = true;
+    micBtn.classList.remove("pulse");
+    camBtn.classList.remove("pulse");
+  }
+  function checkOnboarding() {
+    // keep the card open until both senses are on (or the visitor skips)
+    if (micOn && camOn) { setTimeout(closeOnboarding, 900); }
+    else if (onboard.classList.contains("show")) { /* still waiting for the other one */ }
+  }
+  obMic.addEventListener("click", async e => {
+    e.stopPropagation();
+    const ok = await enableMic();
+    obMic.style.opacity = ok ? ".55" : "1";
+    obMic.querySelector("strong").textContent = ok ? "Voice connected ✓" : "Enable voice";
+  });
+  obCam.addEventListener("click", async e => {
+    e.stopPropagation();
+    const ok = await enableCam();
+    obCam.style.opacity = ok ? ".55" : "1";
+    obCam.querySelector("strong").textContent = ok ? "Camera connected ✓" : "Enable camera";
+  });
+  obSkip.addEventListener("click", e => { e.stopPropagation(); closeOnboarding(); });
+  onboard.addEventListener("click", e => e.stopPropagation());
+
   muteBtn.addEventListener("click", e => {
     e.stopPropagation();
     muteAll = !muteAll;

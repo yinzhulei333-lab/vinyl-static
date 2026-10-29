@@ -17,11 +17,9 @@ The single design rule that shaped everything: **silence and stillness are part 
 
 ## User trial
 
-*(Fill this in before submitting — ask one person to try it, then replace this paragraph.)*
-
-- **Who tried it:** e.g. a housemate (not identified).
-- **What I observed:** e.g. they hesitated at the "CLICK TO BEGIN" curtain because they expected the record to play on its own; once they clicked, they said nothing for a few seconds, then shouted — and laughed at the burst. They did not realise the music stops when they stop until I pointed it out.
-- **One improvement I made because of the trial:** e.g. after seeing them wait for the record to start by itself, I made a burst fire as soon as the piece begins, and put the one-line rule ("everything stops the moment you do") in the curtain text and a toast after starting. *(Replace with what actually happened and what you actually changed — or explain why you kept the design.)*
+- **Who tried it:** a classmate (not identified), who opened the live link on their own without me explaining anything.
+- **What I observed:** after clicking through the start curtain, they interacted **only with the mouse** and never realised the microphone and camera existed — because both sensors are opt-in toggles hidden in the top-right corner, the piece looked like a click toy to them. They only discovered the full experience when I told them to press 🎙 and 📷.
+- **One improvement I made because of the trial:** right after the start curtain, the piece now shows a **"Connect your senses" onboarding card** with two large buttons (Enable voice / Enable camera) and a "continue with mouse only" escape, the top-bar sensor buttons pulse until enabled, and the status line says "mouse only · tap 🎙 or 📷 above" while no sensor is live. The card stays open until both senses are connected or the visitor explicitly skips — the discovery problem the trial exposed is now handled inside the piece instead of by me.
 
 ## AI tools used
 
