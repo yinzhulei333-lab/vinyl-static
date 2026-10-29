@@ -121,6 +121,14 @@
     50% { box-shadow: 0 0 16px 2px rgba(120, 145, 255, .45); border-color: #9fb4ff; color: #eef2ff; }
   }
 
+  .companion {
+    position: fixed; bottom: 16px; right: 20px; z-index: 3;
+    font-size: 10.5px; letter-spacing: .1em;
+    pointer-events: auto;
+  }
+  .companion a { color: #55628f; text-decoration: none; border-bottom: 1px dotted rgba(120,145,255,.4); padding-bottom: 2px; transition: color .25s; }
+  .companion a:hover { color: #aebcf5; }
+
   .toast {
     position: fixed; top: 66px; left: 50%; transform: translateX(-50%) translateY(-8px);
     background: rgba(10,12,28,.95); border: 1px solid rgba(150,175,255,.28);
@@ -163,6 +171,8 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div class="companion"><a href="https://yinzhulei333-lab.github.io/decision-pinball/" target="_blank" rel="noopener">♪ companion piece — DECISION PINBALL</a></div>
 
 <div class="onboard" id="onboard">
   <h3>CONNECT YOUR SENSES</h3>

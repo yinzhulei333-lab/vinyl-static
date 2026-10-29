@@ -59,6 +59,15 @@ Microphone and camera require a secure context, so use `localhost` or the live h
 - Very dim rooms reduce camera sensitivity.
 - On low-end integrated GPUs the adaptive quality may drop the film grain and reduce particle counts.
 
+## Companion piece
+
+This piece grew out of an earlier exploration for the same brief: **Decision Pinball** 🍄 — a Mario-style cannon where the ball decides your dilemma instead of the record playing you.
+
+- Live: https://yinzhulei333-lab.github.io/decision-pinball/
+- Source: https://github.com/yinzhulei333-lab/decision-pinball
+
+Comparing the two shows a deliberate contrast in interaction philosophy: Decision Pinball is *operated* (aim, fire, watch the outcome), while VINYL STATIC is *performed* (continuous body and voice input with no goal state).
+
 ## Credits
 
 - All code, audio synthesis and visuals written from scratch for this assignment (AI assistance documented in PROCESS.md). No borrowed code, images, audio or datasets. Aesthetic references: turntablism, modular-light installations, generative art practice.
